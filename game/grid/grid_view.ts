@@ -11,6 +11,7 @@ const WALK_MS = 120;
 const BUMP_MS = 60;
 const MARKER_COLOR = 0xf5e6a8;
 const BUMP_COLOR = 0xe0533d;
+const GATHERED_COLOR = 0x8a9ba8;
 
 const TERRAIN_COLORS: Record<Terrain, number> = {
   snowfield: 0xe8f0f7, //near white
@@ -38,6 +39,7 @@ export class GridView extends Phaser.Scene {
   private readonly start: Cell;
   private ground!: Phaser.GameObjects.Graphics;
   private marker!: Phaser.GameObjects.Arc;
+  private readonly gathered = new Set<string>();
 
   constructor(state: GameState) {
     super("grid");
@@ -83,6 +85,9 @@ export class GridView extends Phaser.Scene {
       case "blocked":
         return this.bump(event.at, event.toward);
       case "gathered":
+        this.gathered.add(`${event.at.x},${event.at.y}`);
+        this.drawCellsAround(event.at);
+        return Promise.resolve();
       case "gatherFailed":
         return Promise.resolve();
       default:
@@ -129,7 +134,10 @@ export class GridView extends Phaser.Scene {
     this.ground.clear();
     for (let y = centerY - CELLS_DOWN; y <= centerY + CELLS_DOWN; y++) {
       for (let x = centerX - CELLS_ACROSS; x <= centerX + CELLS_ACROSS; x++) {
-        this.ground.fillStyle(TERRAIN_COLORS[terrainAt(this.seed, x, y)]);
+        const taken = this.gathered.has(`${x},${y}`);
+        this.ground.fillStyle(
+          taken ? GATHERED_COLOR : TERRAIN_COLORS[terrainAt(this.seed, x, y)],
+        );
         this.ground.fillRect(
           x * CELL_SIZE,
           y * CELL_SIZE,
