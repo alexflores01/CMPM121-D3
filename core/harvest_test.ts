@@ -11,11 +11,15 @@ import {
 const SEED = 121;
 
 // a new game with the player on a passable cell that yields 'item'.
-function standingOn(item: string | null): GameState {
+function standingOn(item: string | null, skip = 0): GameState {
   for (let y = 0; y < 200; y++) {
     for (let x = 0; x < 200; x++) {
       const terrain = terrainAt(SEED, x, y);
       if (isPassable(terrain) && YIELDS[terrain] === item) {
+        if (skip > 0) {
+          skip--;
+          continue;
+        }
         const state = newGame(SEED);
         state.player = { x, y };
         return state;
@@ -32,7 +36,12 @@ Deno.test("gathering twice gives nothing the second time", () => {
   const first = apply(state, { type: "gather" });
   const second = apply(state, { type: "gather" });
 
-  assertEquals(first, [{ type: "gathered", at: { x, y }, item: "wood" }]);
+  assertEquals(first, [{
+    type: "gathered",
+    at: { x, y },
+    item: "wood",
+    inventory: { wood: 1 },
+  }]);
   assertEquals(second, [{ type: "gatherFailed", at: { x, y } }]);
   assertEquals(state.inventory, { wood: 1 });
 });
@@ -55,4 +64,22 @@ Deno.test("saved state holds only the cells that changed", () => {
   apply(state, { type: "gather" });
 
   assertEquals(state.gathered, { [`${x},${y}`]: true });
+});
+
+Deno.test("a gathered event keeps its inventory while state moves on", () => {
+  const state = standingOn("wood");
+  const { x, y } = state.player;
+  const [kept] = apply(state, { type: "gather" });
+
+  //move to a second wood cell and gather again
+  state.player = standingOn("wood", 1).player;
+  apply(state, { type: "gather" });
+
+  assertEquals(state.inventory, { wood: 2 });
+  assertEquals(kept, {
+    type: "gathered",
+    at: { x, y },
+    item: "wood",
+    inventory: { wood: 1 },
+  });
 });

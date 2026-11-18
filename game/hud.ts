@@ -35,6 +35,7 @@ export class Hud {
     if (event.type === "gathered") {
       this.gathered.add(`${event.at.x},${event.at.y}`);
       this.showPosition(event.at.x, event.at.y);
+      this.showInventory(event.inventory);
     }
   }
 
@@ -43,5 +44,14 @@ export class Hud {
     const terrain = terrainAt(this.seed, x, y);
     const taken = this.gathered.has(`${x},${y}`);
     element("terrain").textContent = taken ? `${terrain} (gathered)` : terrain;
+  }
+
+  private showInventory(inventory: Record<string, number>) {
+    const items = Object.entries(inventory).map(([item, count]) => {
+      const li = document.createElement("li");
+      li.textContent = `${item}: ${count}`;
+      return li;
+    });
+    element("inventory").replaceChildren(...items);
   }
 }
