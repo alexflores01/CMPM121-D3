@@ -21,6 +21,14 @@ export function isPassable(terrain: Terrain): boolean {
   return terrain !== "icewater" && terrain !== "crystal";
 }
 
+//what each terrain gives when gathered. A new terrain needs a row here.
+export const YIELDS: Record<Terrain, string | null> = {
+  snowfield: null,
+  pines: "wood",
+  icewater: null,
+  crystal: "crystal",
+};
+
 // Value noise: random numbers at coarse grid points, blended between them, so
 // that terrain forms regions instead of static.
 function noise(seed: number, x: number, y: number, scale: number): number {
