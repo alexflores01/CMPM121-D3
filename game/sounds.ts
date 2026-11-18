@@ -8,6 +8,8 @@ const SOUND_FOR: Record<GameEvent["type"], SoundName | null> = {
   blocked: "bump",
   gathered: "crystal",
   gatherFailed: "bump",
+  crafted: "chime",
+  craftFailed: "bump",
 };
 
 type Note = {

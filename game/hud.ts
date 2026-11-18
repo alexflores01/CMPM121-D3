@@ -14,6 +14,14 @@ function describe(event: GameEvent): string {
       return `gathered ${event.item}`;
     case "gatherFailed":
       return "nothing to gather here";
+    case "crafted":
+      return `crafted ${event.output}`;
+    case "craftFailed": {
+      const list = Object.entries(event.missing)
+        .map(([item, count]) => `${count} ${item}`)
+        .join(", ");
+      return `can't make ${event.output}: missing ${list}`;
+    }
   }
 }
 
@@ -37,6 +45,7 @@ export class Hud {
       this.showPosition(event.at.x, event.at.y);
       this.showInventory(event.inventory);
     }
+    if (event.type === "crafted") this.showInventory(event.inventory);
   }
 
   private showPosition(x: number, y: number) {

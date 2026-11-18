@@ -3,6 +3,7 @@
 // apply() decides how, or whether, to show them over time.
 
 import { isPassable, type Terrain, terrainAt, YIELDS } from "./terrain.ts";
+import { type Recipe, RECIPES } from "./recipes.ts";
 
 export type Cell = { x: number; y: number };
 
@@ -21,7 +22,8 @@ export type GameState = {
 // Command: https://gameprogrammingpatterns.com/command.html
 export type Command =
   | { type: "move"; direction: Direction }
-  | { type: "gather" };
+  | { type: "gather" }
+  | { type: "craft"; output: string };
 
 // Domain Event: https://martinfowler.com/eaaDev/DomainEvent.html
 export type GameEvent =
@@ -33,7 +35,9 @@ export type GameEvent =
     item: string;
     inventory: Record<string, number>;
   }
-  | { type: "gatherFailed"; at: Cell };
+  | { type: "gatherFailed"; at: Cell }
+  | { type: "crafted"; output: string; inventory: Record<string, number> }
+  | { type: "craftFailed"; output: string; missing: Record<string, number> };
 
 const STEPS: Record<Direction, Cell> = {
   north: { x: 0, y: -1 },
@@ -54,6 +58,8 @@ export function apply(state: GameState, command: Command): GameEvent[] {
       return move(state, command.direction);
     case "gather":
       return gather(state);
+    case "craft":
+      return craft(state, command.output);
   }
 }
 
@@ -91,4 +97,32 @@ function gather(state: GameState): GameEvent[] {
   state.inventory[item] = (state.inventory[item] ?? 0) + 1;
   state.gathered[cellKey(at)] = true;
   return [{ type: "gathered", at, item, inventory: { ...state.inventory } }];
+}
+
+//what is still missing for recipe. empty means ready
+export function missingFor(
+  state: GameState,
+  recipe: Recipe,
+): Record<string, number> {
+  const missing: Record<string, number> = {};
+  for (const [item, need] of Object.entries(recipe.inputs)) {
+    const have = state.inventory[item] ?? 0;
+    if (have < need) missing[item] = need - have;
+  }
+  return missing;
+}
+
+function craft(state: GameState, output: string): GameEvent[] {
+  const recipe = RECIPES.find((row) => row.output === output);
+  if (!recipe) return [{ type: "craftFailed", output, missing: {} }];
+  const missing = missingFor(state, recipe);
+  if (Object.keys(missing).length > 0) {
+    return [{ type: "craftFailed", output, missing }];
+  }
+  for (const [item, need] of Object.entries(recipe.inputs)) {
+    state.inventory[item] -= need;
+    if (state.inventory[item] === 0) delete state.inventory[item];
+  }
+  state.inventory[output] = (state.inventory[output] ?? 0) + 1;
+  return [{ type: "crafted", output, inventory: { ...state.inventory } }];
 }
