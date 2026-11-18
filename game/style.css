@@ -1,9 +1,9 @@
 /* The page around the grid. Everything here is yours to restyle. */
 body {
   margin: 0;
-  background: #14161a;
-  color: #e8e4da;
-  font: 14px system-ui, sans-serif;
+  background: #0d1b2a;
+  color: #e6f1f8;
+  font: 15px Georgia, "Times New Roman", serif;
 }
 
 #app {
@@ -34,7 +34,7 @@ body {
 }
 
 #hud dt {
-  color: #8d8a82;
+  color: #7fa6bf;
 }
 
 #hud dd {
@@ -45,15 +45,15 @@ body {
   min-height: 1.4em;
   margin: 0;
   font-family: monospace;
-  color: #b7b3a8;
+  color: #b9d4e6;
 }
 
 #mute {
   align-self: start;
   padding: 4px 10px;
   color: inherit;
-  background: #262a31;
-  border: 1px solid #3a3f48;
+  background: #1b2f45;
+  border: 1px solid #2c4a63;
   border-radius: 4px;
   cursor: pointer;
 }
@@ -80,4 +80,30 @@ body {
     transparent 55%,
     rgb(0 0 0 / 0.5) 100%
   );
+}
+
+#hud h2 {
+  margin: 8px 0 0;
+  font-size: 18px;
+  color: #9fc3d9;
+}
+
+#inventory {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#inventory li {
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  background: rgb(159 227 240 / 0.08);
+  border: 1px solid #2c4a63;
+  border-radius: 4px;
+}
+
+#inventory:empty::before {
+  content: "empty";
+  color: #6b8aa0;
+  font-style: italic;
 }

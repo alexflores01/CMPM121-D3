@@ -29,3 +29,9 @@ For a person, or an agent driving a browser. Run `deno task dev` and open the lo
 | 18 | Walk a few cells away from a gathered cell, then back onto it | The cell is still gray-blue, and Terrain reads `pines (gathered)`. |
 
 | 19 | Stand on snowfield and press G | `#live` says `nothing to gather here`. `gathered` has not changed. |
+
+| 20 | Gather on pines | Snowflakes burst out from the cell and fade, and you three quick high clicks. |
+
+| 21 | Gather, and watch the Inventory list | The item appears as the snow burst starts, never before. |
+
+| 22 | Load the page | Dark blue page, serif font, Inventory list reads "empty". |

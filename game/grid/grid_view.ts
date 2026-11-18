@@ -9,6 +9,8 @@ const VIEW_WIDTH = 800;
 const VIEW_HEIGHT = 600;
 const WALK_MS = 120;
 const BUMP_MS = 60;
+const GATHER_MS = 200;
+const FROST_COLOR = 0xdff6ff;
 const MARKER_COLOR = 0xf5e6a8;
 const BUMP_COLOR = 0xe0533d;
 const GATHERED_COLOR = 0x8a9ba8;
@@ -87,7 +89,7 @@ export class GridView extends Phaser.Scene {
       case "gathered":
         this.gathered.add(`${event.at.x},${event.at.y}`);
         this.drawCellsAround(event.at);
-        return Promise.resolve();
+        return this.gatherPulse(event.at);
       case "gatherFailed":
         return Promise.resolve();
       default:
@@ -125,6 +127,28 @@ export class GridView extends Phaser.Scene {
           done();
         },
       });
+    });
+  }
+
+  //a ring of frost spreads out from the cell and fades
+  private gatherPulse(at: Cell): Promise<void> {
+    const { x, y } = cellCenter(at);
+    return new Promise((done) => {
+      for (let i = 0; i < 18; i++) {
+        const angle = (i / 18) * Math.PI * 2;
+        const flake = this.add.circle(x, y, 3, FROST_COLOR);
+        this.tweens.add({
+          targets: flake,
+          x: x + Math.cos(angle) * CELL_SIZE,
+          y: y + Math.sin(angle) * CELL_SIZE,
+          alpha: 0,
+          duration: GATHER_MS,
+          onComplete: () => {
+            flake.destroy();
+            if (i === 17) done();
+          },
+        });
+      }
     });
   }
 
