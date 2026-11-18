@@ -86,3 +86,12 @@ On every push to `main`, a review bot can comment on your commit. It's optional 
 [The workflow](.github/workflows/review-bot.yml) is the whole bot, and the top of that file explains how to set it up or opt out. [`REVIEWBOT.md`](REVIEWBOT.md) tells it what to look for, and it's yours to change.
 
 Its comments are public if your repository is. It runs on a throwaway machine with your code, can browse the web, and spends your own BayLeaf allowance.
+
+# Design Plan and Target
+
+- The player is stranded in a blizzard and must reach a cabin before freezing. They will gather from the frozen land and craft to push deeper into the storm.
+- Terrain: Snowfield, Frozen Pines, Crystal Ice, Icy water.
+- Craftable: Torch, Ice Pick, Lantern
+- Look: Pale blue and white with a frosty font. Sound: Crunching snow for steps, ice clicks for gathering, and blizzard wind.
+- It would be forgettable if it felt like the starter with a winter skin. To avoid that, the cold should matter.
+- If short on time, keeping gathering, crafting, the torch, and the ending, drop extra items and fancy art/effects.
