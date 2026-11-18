@@ -77,3 +77,27 @@ Deno.test("an event keeps its cells while state moves on", () => {
     to: { x, y },
   }]);
 });
+
+Deno.test("crystal is shut without an icepick and open with one", () => {
+  let wall = -1;
+  for (let x = 2; x < 10_000; x++) {
+    if (
+      isPassable(terrainAt(SEED, x, 0)) &&
+      terrainAt(SEED, x + 1, 0) === "crystal"
+    ) {
+      wall = x;
+      break;
+    }
+  }
+  if (wall < 0) throw new Error("Found no crystal wall on this row.");
+
+  const state = newGame(SEED);
+  state.player = { x: wall, y: 0 };
+
+  const blocked = apply(state, { type: "move", direction: "east" });
+  assertEquals(blocked[0].type, "blocked");
+
+  state.inventory.icepick = 1;
+  const moved = apply(state, { type: "move", direction: "east" });
+  assertEquals(moved[0].type, "moved");
+});
