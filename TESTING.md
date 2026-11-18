@@ -35,3 +35,11 @@ For a person, or an agent driving a browser. Run `deno task dev` and open the lo
 | 21 | Gather, and watch the Inventory list | The item appears as the snow burst starts, never before. |
 
 | 22 | Load the page | Dark blue page, serif font, Inventory list reads "empty". |
+
+|23 | Load the page | Recipes list shows Torch and Ice Pick, each saying what is missing. |
+
+| 25 | Gather 2 wood, then Tab to Torch and press Enter | `#live` says `crafted torch`, a chime plays, and Inventory shows torch: 1. |
+
+| 26 | Press Enter on a recipe that is not ready | `#live` says `can't make ... missing ...`, and Inventory is unchanged. |
+
+| 27 | Click a recipe with the mouse, then press an arrow | The arrow moves the marker. |

@@ -107,3 +107,26 @@ body {
   color: #6b8aa0;
   font-style: italic;
 }
+
+#recipes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#recipes button {
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 6px 10p;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: #1b2f45;
+  border: 1px solid #2c4a63;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#recipes button:focus-visible {
+  outline: 2px solid #9fe3f0;
+}

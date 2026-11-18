@@ -4,6 +4,7 @@ import { startGridView } from "./grid/grid_view.ts";
 import { Hud } from "./hud.ts";
 import { Presenter } from "./presenter.ts";
 import { Sounds } from "./sounds.ts";
+import { RecipeBook } from "./recipe_book.ts";
 
 // Where everything is wired together, and the only file that knows every part.
 // Hexagonal Architecture (the core inside; keys, grid, HUD, sound, and tests around
@@ -20,9 +21,16 @@ const sounds = new Sounds(
 const grid = await startGridView(document.getElementById("grid")!, state);
 const presenter = new Presenter([grid, hud, sounds]);
 const controller = new Controller(state, presenter);
+const recipeBook = new RecipeBook(
+  document.getElementById("recipes")!,
+  state,
+  (command) => controller.send(command),
+);
+recipeBook.update();
+controller.onSettled = () => recipeBook.update();
 
 // For poking at in the browser console, such as comparing logical state with
 // presentation state: game.state
 Object.assign(globalThis, {
-  game: { state, grid, hud, sounds, presenter, controller },
+  game: { state, grid, hud, sounds, presenter, controller, recipeBook },
 });
