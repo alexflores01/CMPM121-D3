@@ -17,6 +17,7 @@ export class Controller {
   private readonly presenter: Presenter;
   // A tap made during a walk, kept until the presenter is free.
   private pressed: Command | null = null;
+  recording: Command[] = [];
   private held: Direction[] = [];
   // Runs when nothing is playing and no next command has started, so it is safe
   // to read the core here. During playback, the core is ahead of what the player
@@ -73,6 +74,7 @@ export class Controller {
     // Playing nothing would report idle at once, and a held key would land back
     // here until the stack overflowed. No events means there is nothing to wait for.
     const events = apply(this.state, command);
+    this.recording.push(command);
     if (events.length > 0) this.presenter.play(events);
   }
 
