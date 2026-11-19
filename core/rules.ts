@@ -73,11 +73,6 @@ export function yeildAt(state: GameState, cell: Cell): string | null {
   return YIELDS[terrainAt(state.seed, cell.x, cell.y)];
 }
 
-function canEnter(state: GameState, terrain: Terrain): boolean {
-  return isPassable(terrain) ||
-    (terrain === "crystal" && (state.inventory.icepick ?? 0) >= 1);
-}
-
 function move(state: GameState, direction: Direction): GameEvent[] {
   const step = STEPS[direction];
   // Events are retained and played back later, while state keeps changing. So an
@@ -87,7 +82,7 @@ function move(state: GameState, direction: Direction): GameEvent[] {
   const from = { ...state.player };
   const to = { x: from.x + step.x, y: from.y + step.y };
   const terrain = terrainAt(state.seed, to.x, to.y);
-  if (!canEnter(state, terrain)) {
+  if (!isPassable(terrain, state.inventory)) {
     return [{ type: "blocked", at: from, toward: to, terrain }];
   }
   state.player.x = to.x;

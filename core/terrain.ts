@@ -17,8 +17,21 @@ export function terrainAt(seed: number, x: number, y: number): Terrain {
   return noise(seed + 2, x, y, 6) < 0.45 ? "pines" : "snowfield";
 }
 
-export function isPassable(terrain: Terrain): boolean {
-  return terrain !== "icewater" && terrain !== "crystal";
+export const ENTRY: Record<Terrain, string> = {
+  snowfield: "open",
+  pines: "open",
+  icewater: "closed",
+  crystal: "icepick",
+};
+
+export function isPassable(
+  terrain: Terrain,
+  invenotry: Record<string, number>,
+): boolean {
+  const entry = ENTRY[terrain];
+  if (entry === "open") return true;
+  if (entry === "closed") return false;
+  return (invenotry[entry] ?? 0) > 0;
 }
 
 //what each terrain gives when gathered. A new terrain needs a row here.

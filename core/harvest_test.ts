@@ -15,7 +15,7 @@ function standingOn(item: string | null, skip = 0): GameState {
   for (let y = 0; y < 200; y++) {
     for (let x = 0; x < 200; x++) {
       const terrain = terrainAt(SEED, x, y);
-      if (isPassable(terrain) && YIELDS[terrain] === item) {
+      if (isPassable(terrain, {}) && YIELDS[terrain] === item) {
         if (skip > 0) {
           skip--;
           continue;

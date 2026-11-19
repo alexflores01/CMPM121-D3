@@ -14,8 +14,8 @@ const SEED = 121;
 // Searching keeps these tests honest if the terrain formula changes.
 function besideEasternCell(passable: boolean): GameState {
   for (let x = 2; x < 10_000; x++) {
-    const here = isPassable(terrainAt(SEED, x, 0));
-    const east = isPassable(terrainAt(SEED, x + 1, 0));
+    const here = isPassable(terrainAt(SEED, x, 0), {});
+    const east = isPassable(terrainAt(SEED, x + 1, 0), {});
     if (here && east === passable) {
       const state = newGame(SEED);
       state.player = { x, y: 0 };
@@ -82,7 +82,7 @@ Deno.test("crystal is shut without an icepick and open with one", () => {
   let wall = -1;
   for (let x = 2; x < 10_000; x++) {
     if (
-      isPassable(terrainAt(SEED, x, 0)) &&
+      isPassable(terrainAt(SEED, x, 0), {}) &&
       terrainAt(SEED, x + 1, 0) === "crystal"
     ) {
       wall = x;
@@ -100,4 +100,8 @@ Deno.test("crystal is shut without an icepick and open with one", () => {
   state.inventory.icepick = 1;
   const moved = apply(state, { type: "move", direction: "east" });
   assertEquals(moved[0].type, "moved");
+
+  const gathered = apply(state, { type: "gather" });
+  assertEquals(gathered[0].type, "gathered");
+  assertEquals(state.inventory.crystal, 1);
 });
