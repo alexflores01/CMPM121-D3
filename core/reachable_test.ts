@@ -1,5 +1,12 @@
 import { assert } from "@std/assert";
-import { type Recipe, RECIPES, YIELDS } from "./mod.ts";
+import {
+  apply,
+  CAPSTONE,
+  newGame,
+  type Recipe,
+  RECIPES,
+  YIELDS,
+} from "./mod.ts";
 
 function reachable(recipes: Recipe[]): Set<string> {
   const have = new Set<string>();
@@ -38,4 +45,16 @@ Deno.test("a recipe that needs its own output is unreachable", () => {
   };
   const have = reachable([...RECIPES, mirror]);
   assert(!have.has("mirror"), "mirror should be unreachable");
+});
+
+Deno.test("the capstone can be reached", () => {
+  assert(reachable(RECIPES).has(CAPSTONE));
+});
+
+Deno.test("crafting the capstone wins the game", () => {
+  const state = newGame(121);
+  state.inventory = { lantern: 1, firewood: 1 };
+  const events = apply(state, { type: "craft", output: CAPSTONE });
+  assert(state.won);
+  assert(events.at(-1)?.type === "won");
 });

@@ -30,6 +30,8 @@ function describe(event: GameEvent): string {
         .join(", ");
       return `can't make ${event.output}: missing ${list}`;
     }
+    case "won":
+      return "You lit the hearth. You survived the storm.";
   }
 }
 

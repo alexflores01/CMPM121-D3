@@ -3,7 +3,7 @@
 // apply() decides how, or whether, to show them over time.
 
 import { isPassable, type Terrain, terrainAt, YIELDS } from "./terrain.ts";
-import { type Recipe, RECIPES } from "./recipes.ts";
+import { CAPSTONE, type Recipe, RECIPES } from "./recipes.ts";
 
 export type Cell = { x: number; y: number };
 
@@ -17,6 +17,7 @@ export type GameState = {
   inventory: Record<string, number>;
   //cells already gathered from, keyed "x,y". Only changed cells are stored
   gathered: Record<string, boolean>;
+  won: boolean;
 };
 
 // Command: https://gameprogrammingpatterns.com/command.html
@@ -37,7 +38,8 @@ export type GameEvent =
   }
   | { type: "gatherFailed"; at: Cell }
   | { type: "crafted"; output: string; inventory: Record<string, number> }
-  | { type: "craftFailed"; output: string; missing: Record<string, number> };
+  | { type: "craftFailed"; output: string; missing: Record<string, number> }
+  | { type: "won" };
 
 const STEPS: Record<Direction, Cell> = {
   north: { x: 0, y: -1 },
@@ -48,11 +50,18 @@ const STEPS: Record<Direction, Cell> = {
 
 // Singleton, avoided on purpose: tests make as many games as they need. https://gameprogrammingpatterns.com/singleton.html
 export function newGame(seed: number): GameState {
-  return { seed, player: { x: 0, y: 0 }, inventory: {}, gathered: {} };
+  return {
+    seed,
+    player: { x: 0, y: 0 },
+    inventory: {},
+    gathered: {},
+    won: false,
+  };
 }
 
 // The single way in. It updates the state it is given and returns the events.
 export function apply(state: GameState, command: Command): GameEvent[] {
+  if (state.won) return [];
   switch (command.type) {
     case "move":
       return move(state, command.direction);
@@ -124,5 +133,14 @@ function craft(state: GameState, output: string): GameEvent[] {
     if (state.inventory[item] === 0) delete state.inventory[item];
   }
   state.inventory[output] = (state.inventory[output] ?? 0) + 1;
-  return [{ type: "crafted", output, inventory: { ...state.inventory } }];
+  const crafted: GameEvent = {
+    type: "crafted",
+    output,
+    inventory: { ...state.inventory },
+  };
+  if (output === CAPSTONE) {
+    state.won = true;
+    return [crafted, { type: "won" }];
+  }
+  return [crafted];
 }
