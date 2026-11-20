@@ -56,6 +56,7 @@ export class Hud {
       this.showInventory(event.inventory);
     }
     if (event.type === "crafted") this.showInventory(event.inventory);
+    if (event.type === "won") element("banner").hidden = false;
   }
 
   private showPosition(x: number, y: number) {

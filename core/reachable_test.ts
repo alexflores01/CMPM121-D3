@@ -1,19 +1,29 @@
-import { assert } from "@std/assert";
+import { assert, assertEquals } from "@std/assert";
 import {
   apply,
   CAPSTONE,
+  type Command,
+  ENTRY,
   newGame,
   type Recipe,
   RECIPES,
+  type Terrain,
   YIELDS,
 } from "./mod.ts";
 
 function reachable(recipes: Recipe[]): Set<string> {
   const have = new Set<string>();
-  for (const item of Object.values(YIELDS)) {
-    if (item) have.add(item);
-  }
 
+  const enter = (opener: string | null) => {
+    for (const terrain of Object.keys(ENTRY) as Terrain[]) {
+      if (ENTRY[terrain] === "open" || ENTRY[terrain] === opener) {
+        const item = YIELDS[terrain];
+        if (item) have.add(item);
+      }
+    }
+  };
+
+  enter(null);
   let changed = true;
   while (changed) {
     changed = false;
@@ -23,6 +33,7 @@ function reachable(recipes: Recipe[]): Set<string> {
         Object.keys(recipe.inputs).every((item) => have.has(item))
       ) {
         have.add(recipe.output);
+        enter(recipe.output);
         changed = true;
       }
     }
@@ -57,4 +68,26 @@ Deno.test("crafting the capstone wins the game", () => {
   const events = apply(state, { type: "craft", output: CAPSTONE });
   assert(state.won);
   assert(events.at(-1)?.type === "won");
+});
+
+Deno.test("cystal recipes need what opens crystal", () => {
+  const noPick = RECIPES.filter((recipe) => recipe.output != "icepick");
+  assert(!reachable(noPick).has("lens"), "lens should need the icepick");
+});
+
+Deno.test("after the ending, no command changes anything", () => {
+  const state = newGame(121);
+  state.inventory = { lantern: 1, firewood: 1, wood: 10 };
+  apply(state, { type: "craft", output: CAPSTONE });
+  const snapshot = JSON.parse(JSON.stringify(state));
+
+  const commands: Command[] = [
+    { type: "move", direction: "east" },
+    { type: "gather" },
+    { type: "craft", output: "torch" },
+  ];
+  for (const command of commands) {
+    assertEquals(apply(state, command), []);
+    assertEquals(state, snapshot);
+  }
 });

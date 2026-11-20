@@ -30,16 +30,24 @@ For a person, or an agent driving a browser. Run `deno task dev` and open the lo
 
 | 19 | Stand on snowfield and press G | `#live` says `nothing to gather here`. `gathered` has not changed. |
 
-| 20 | Gather on pines | Snowflakes burst out from the cell and fade, and you three quick high clicks. |
+| 20 | Gather, and watch the Inventory list | The item appears as the snow burst, never before. |
 
-| 21 | Gather, and watch the Inventory list | The item appears as the snow burst starts, never before. |
+| 21 | Gather several times quickly, then mash arrows | The game never freezes.
 
-| 22 | Load the page | Dark blue page, serif font, Inventory list reads "empty". |
+| 22 | Load the page and read the Recipes list | Each recipe says what is missing. |
 
-|23 | Load the page | Recipes list shows Torch and Ice Pick, each saying what is missing. |
+|23 | Gather enough wood for a Torch, then Tab to Torch and press Enter| `#live` says `crafted torch`, a chime plays, and Inventory shows torch. The torch row updates only after the sound. |
 
-| 25 | Gather 2 wood, then Tab to Torch and press Enter | `#live` says `crafted torch`, a chime plays, and Inventory shows torch: 1. |
+| 24 | Press Enter on a recipe that is not ready | `#live` says `can't make ... missing ...`, and Inventory is unchanged. |
 
-| 26 | Press Enter on a recipe that is not ready | `#live` says `can't make ... missing ...`, and Inventory is unchanged. |
+| 25 | Click a recipe with the mouse, then press arrow | The arrow moves the marker. |
 
-| 27 | Click a recipe with the mouse, then press an arrow | The arrow moves the marker. |
+| 26 | Craft Torch, then Ice Pick, then walk into crystal | The marker walks onto the crystal cell. |
+
+| 27 | Press G on crystal | `#live` says `gathered crystal`, and Inventory shows crystal. |
+
+| 28 | Craft Firewood, Crystal lens, Lantern, then Warm Hearth | A banner say you survived the storm, and a warm chord plays. |
+
+| 29 | After the banner, press arrows, G, and a recipe button | Nothing moves and nothing changes. `game.state.won` is `true`. |
+
+| 30 | Play the whole game using only the keyboard | It can be finished with arrows, G, Tab, and Enter. |

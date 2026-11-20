@@ -11,6 +11,7 @@
     <main id="app">
       <div id="grid"></div>
       <aside id="hud">
+        <p id="goal">Goal: light a Warm Hearth before the cold wins.</p>
         <dl>
           <dt>Position</dt>
           <dd id="position"></dd>
@@ -24,6 +25,9 @@
         <h2>Recipes</h2>
         <ul id="recipes"></ul>
       </aside>
+      <div id="banner" hidden>
+        You lit the Hearth. You survived the storm.
+      </div>
     </main>
     <script type="module" src="/game/main.ts"></script>
   </body>
