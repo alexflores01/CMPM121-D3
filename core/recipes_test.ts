@@ -45,3 +45,15 @@ Deno.test("every recipe input can be gathered or crafted", () => {
     }
   }
 });
+
+Deno.test("a tool you already hold cannot be crafted again", () => {
+  const icepick = RECIPES.find((recipe) => recipe.output === "icepick")!;
+  const state = newGame(SEED);
+  state.inventory = { ...icepick.inputs, icepick: 1 };
+  const snapshot = JSON.parse(JSON.stringify(state));
+
+  const events = apply(state, { type: "craft", output: "icepick" });
+
+  assertEquals(state, snapshot);
+  assertEquals(events[0].type, "craftFailed");
+});

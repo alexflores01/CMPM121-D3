@@ -25,6 +25,9 @@ function describe(event: GameEvent): string {
     case "crafted":
       return `crafted ${event.output}`;
     case "craftFailed": {
+      if (Object.keys(event.missing).length === 0) {
+        return `you already habe a ${event.output}`;
+      }
       const list = Object.entries(event.missing)
         .map(([item, count]) => `${count} ${item}`)
         .join(", ");

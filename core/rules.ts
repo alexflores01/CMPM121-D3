@@ -2,7 +2,13 @@
 // once, and the events it returns are a record of what happened. Whoever called
 // apply() decides how, or whether, to show them over time.
 
-import { isPassable, type Terrain, terrainAt, YIELDS } from "./terrain.ts";
+import {
+  ENTRY,
+  isPassable,
+  type Terrain,
+  terrainAt,
+  YIELDS,
+} from "./terrain.ts";
 import { CAPSTONE, type Recipe, RECIPES } from "./recipes.ts";
 
 export type Cell = { x: number; y: number };
@@ -121,9 +127,17 @@ export function missingFor(
   return missing;
 }
 
+export function alreadyOwned(state: GameState, output: string): boolean {
+  const isTool = Object.values(ENTRY).includes(output);
+  return isTool && (state.inventory[output] ?? 0) > 0;
+}
+
 function craft(state: GameState, output: string): GameEvent[] {
   const recipe = RECIPES.find((row) => row.output === output);
   if (!recipe) return [{ type: "craftFailed", output, missing: {} }];
+  if (alreadyOwned(state, output)) {
+    return [{ type: "craftFailed", output, missing: {} }];
+  }
   const missing = missingFor(state, recipe);
   if (Object.keys(missing).length > 0) {
     return [{ type: "craftFailed", output, missing }];

@@ -51,3 +51,5 @@ For a person, or an agent driving a browser. Run `deno task dev` and open the lo
 | 29 | After the banner, press arrows, G, and a recipe button | Nothing moves and nothing changes. `game.state.won` is `true`. |
 
 | 30 | Play the whole game using only the keyboard | It can be finished with arrows, G, Tab, and Enter. |
+
+| 31 | Craft Ice Pick, then try to craft Ice pick again | `#live` says `you already have a icepick`. Wood and torch are not spent. |
